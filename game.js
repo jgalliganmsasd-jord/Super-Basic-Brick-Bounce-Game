@@ -55,6 +55,7 @@ const paddle = {
 // THE BRICKS (the list is filled in by makeBricks() in bricks.js)
 // ------------------------------------------------------------
 let bricks = [];
+let gameScore = 0;
 
 
 // ------------------------------------------------------------
@@ -86,7 +87,10 @@ function update() {
 
   bounceOffWalls();   // collisions.js
   bounceOffPaddle();  // collisions.js
-  bounceOffBricks();  // collisions.js
+  const brokenBrick = bounceOffBricks();  // collisions.js
+  if (brokenBrick) {
+    scoreSystem(brokenBrick);
+  }
 
   // The ball fell off the bottom: back to the center.
   if (ball.y > HEIGHT) {
@@ -116,6 +120,10 @@ function moveBall() {
   ball.y = ball.y + ball.vy;
 }
 
+function scoreSystem(brick) {
+  gameScore += brick.score.value;
+}
+
 
 // ------------------------------------------------------------
 // DRAW: paints everything on the canvas. Black background,
@@ -126,6 +134,8 @@ function draw() {
   ctx.fillRect(0, 0, WIDTH, HEIGHT);
 
   ctx.fillStyle = "white";
+  ctx.font = "16px sans-serif";
+  ctx.fillText("Score: " + gameScore, 10, 22);
   ctx.fillRect(paddle.x, paddle.y, paddle.width, paddle.height);
   ctx.fillRect(ball.x, ball.y, ball.width, ball.height);
 
@@ -163,10 +173,11 @@ function frame(now) {
 
 function start() {
   bricks = makeBricks();  // bricks.js
+  gameScore = 0;
   resetBall();
   lastTime = performance.now();
   requestAnimationFrame(frame);
 }
 
-// Wait until all three script files have loaded, then start.
+// Wait until all game scripts have loaded, then start.
 window.addEventListener("load", start);

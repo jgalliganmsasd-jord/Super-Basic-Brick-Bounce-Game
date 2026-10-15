@@ -76,6 +76,6 @@ function bounceOffBricks() {
     }
 
     bricks.splice(bricks.indexOf(brick), 1);
-    break;  // bounce off one brick per update, then stop looking
+    return brick;  // bounce off one brick per update, then stop looking
   }
 }
