@@ -6,6 +6,11 @@
 // collisions.js = what happens when the ball touches things
 // ============================================================
 
+const GameState = {
+  addedBallSpeed: 0,
+  addedPaddleSpeed: 0
+};
+
 const canvas = document.getElementById("game");
 const ctx = canvas.getContext("2d");
 
@@ -34,8 +39,8 @@ const ball = {
 function resetBall() {
   ball.x = WIDTH / 2 - ball.width / 2;
   ball.y = HEIGHT / 2 - ball.height / 2;
-  ball.vx = BALL_SPEED;  // right
-  ball.vy = BALL_SPEED;  // down
+  ball.vx = BALL_SPEED + GameState.addedBallSpeed;  // right
+  ball.vy = BALL_SPEED + GameState.addedBallSpeed;  // down
 }
 
 
@@ -89,6 +94,10 @@ function update() {
   bounceOffPaddle();  // collisions.js
   const brokenBrick = bounceOffBricks();  // collisions.js
   if (brokenBrick) {
+    GameState.addedBallSpeed += 0.25;
+    GameState.addedPaddleSpeed += 0.25;
+    ball.vx += Math.sign(ball.vx) * 0.25;
+    ball.vy += Math.sign(ball.vy) * 0.25;
     scoreSystem(brokenBrick);
   }
 
@@ -99,11 +108,12 @@ function update() {
 }
 
 function movePaddle() {
+  const paddleSpeed = paddle.speed + GameState.addedPaddleSpeed;
   if (keys["arrowleft"] || keys["a"]) {
-    paddle.x = paddle.x - paddle.speed;
+    paddle.x = paddle.x - paddleSpeed;
   }
   if (keys["arrowright"] || keys["d"]) {
-    paddle.x = paddle.x + paddle.speed;
+    paddle.x = paddle.x + paddleSpeed;
   }
 
   // Keep the paddle on the screen.
@@ -136,6 +146,9 @@ function draw() {
   ctx.fillStyle = "white";
   ctx.font = "16px sans-serif";
   ctx.fillText("Score: " + gameScore, 10, 22);
+  ctx.font = "12px sans-serif";
+  ctx.fillText("Added ball speed: " + GameState.addedBallSpeed.toFixed(2), 250, 20);
+  ctx.fillText("Added paddle speed: " + GameState.addedPaddleSpeed.toFixed(2), 250, 40);
   ctx.fillRect(paddle.x, paddle.y, paddle.width, paddle.height);
   ctx.fillRect(ball.x, ball.y, ball.width, ball.height);
 
