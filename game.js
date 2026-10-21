@@ -87,9 +87,6 @@ document.addEventListener("keyup", function (event) {
 // what they touched.
 // ------------------------------------------------------------
 function update() {
-  function movePaddleLeft() {
-paddle.x = paddle.x - paddle.speed;
-}
   movePaddle();
   moveBall();
 
@@ -113,8 +110,8 @@ paddle.x = paddle.x - paddle.speed;
 function movePaddle() {
   const paddleSpeed = paddle.speed + GameState.addedPaddleSpeed;
   if (keys["arrowleft"] || keys["a"]) {
-movePaddleLeft();
-}
+    movePaddleLeft;
+  }
   if (keys["arrowright"] || keys["d"]) {
     paddle.x = paddle.x + paddleSpeed;
   }
