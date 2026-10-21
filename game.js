@@ -110,7 +110,7 @@ function update() {
 function movePaddle() {
   const paddleSpeed = paddle.speed + GameState.addedPaddleSpeed;
   if (keys["arrowleft"] || keys["a"]) {
-    movePaddleLeft;
+    movePaddleLeft();
   }
   if (keys["arrowright"] || keys["d"]) {
     paddle.x = paddle.x + paddleSpeed;
