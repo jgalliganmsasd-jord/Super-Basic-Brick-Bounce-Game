@@ -39,8 +39,15 @@ const ball = {
 function resetBall() {
   ball.x = WIDTH / 2 - ball.width / 2;
   ball.y = HEIGHT / 2 - ball.height / 2;
-  ball.vx = BALL_SPEED + GameState.addedBallSpeed;  // right
-  ball.vy = BALL_SPEED + GameState.addedBallSpeed;  // down
+  ball.vx = 0;
+  ball.vy = 0;
+}
+
+function launchBall() {
+  if (ball.vx === 0 && ball.vy === 0) {
+    ball.vx = BALL_SPEED + GameState.addedBallSpeed;  // right
+    ball.vy = BALL_SPEED + GameState.addedBallSpeed;  // down
+  }
 }
 
 
@@ -71,6 +78,10 @@ const keys = {};
 
 document.addEventListener("keydown", function (event) {
   keys[event.key.toLowerCase()] = true;
+  if (event.code === "Space") {
+    event.preventDefault();
+    launchBall();
+  }
   // Stop the arrow keys from scrolling the page.
   if (event.key.startsWith("Arrow")) {
     event.preventDefault();
@@ -107,21 +118,32 @@ function update() {
   }
 }
 
-function movePaddle() {
+function movePaddleLeft() {
   const paddleSpeed = paddle.speed + GameState.addedPaddleSpeed;
-  if (keys["arrowleft"] || keys["a"]) {
-    paddle.x = paddle.x - paddleSpeed;
-  }
-  if (keys["arrowright"] || keys["d"]) {
-    paddle.x = paddle.x + paddleSpeed;
-  }
+  paddle.x = paddle.x - paddleSpeed;
 
   // Keep the paddle on the screen.
   if (paddle.x < 0) {
     paddle.x = 0;
   }
+}
+
+function movePaddleRight() {
+  const paddleSpeed = paddle.speed + GameState.addedPaddleSpeed;
+  paddle.x = paddle.x + paddleSpeed;
+
+  // Keep the paddle on the screen.
   if (paddle.x + paddle.width > WIDTH) {
     paddle.x = WIDTH - paddle.width;
+  }
+}
+
+function movePaddle() {
+  if (keys["arrowleft"] || keys["a"]) {
+    movePaddleLeft();
+  }
+  if (keys["arrowright"] || keys["d"]) {
+    movePaddleRight();
   }
 }
 
