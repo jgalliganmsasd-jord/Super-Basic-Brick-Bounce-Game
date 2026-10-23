@@ -76,6 +76,16 @@ const paddle = {
 // ------------------------------------------------------------
 let bricks = [];
 let gameScore = 0;
+let isPaused = false;
+
+function pauseGame() {
+  isPaused = !isPaused;
+  if (isPaused) {
+    Object.keys(keys).forEach(function (key) {
+      keys[key] = false;
+    });
+  }
+}
 
 
 // ------------------------------------------------------------
@@ -89,6 +99,9 @@ document.addEventListener("keydown", function (event) {
   if (event.code === "Space") {
     event.preventDefault();
     launchBall();
+  }
+  if (event.key.toLowerCase() === "p" && !event.repeat) {
+    pauseGame();
   }
   if (event.key.toLowerCase() === "r") {
     restartGame();
@@ -186,6 +199,14 @@ function draw() {
   ctx.fillRect(ball.x, ball.y, ball.width, ball.height);
 
   drawBricks();  // bricks.js
+
+  if (isPaused) {
+    ctx.fillStyle = "white";
+    ctx.font = "32px sans-serif";
+    ctx.textAlign = "center";
+    ctx.fillText("Paused", WIDTH / 2, HEIGHT / 2);
+    ctx.textAlign = "start";
+  }
 }
 
 
@@ -200,6 +221,14 @@ let lastTime = 0;
 let leftover = 0;
 
 function frame(now) {
+  if (isPaused) {
+    lastTime = now;
+    leftover = 0;
+    draw();
+    requestAnimationFrame(frame);
+    return;
+  }
+
   leftover = leftover + (now - lastTime);
   lastTime = now;
 
