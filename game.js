@@ -70,6 +70,12 @@ const paddle = {
   speed: 6
 };
 
+function widenPaddle() {
+  const center = paddle.x + paddle.width / 2;
+  paddle.width = Math.min(paddle.width + 20, WIDTH);
+  paddle.x = Math.max(0, Math.min(WIDTH - paddle.width, center - paddle.width / 2));
+}
+
 
 // ------------------------------------------------------------
 // THE BRICKS (the list is filled in by makeBricks() in bricks.js)
@@ -102,6 +108,9 @@ document.addEventListener("keydown", function (event) {
   }
   if (event.key.toLowerCase() === "p" && !event.repeat) {
     pauseGame();
+  }
+  if (event.key.toLowerCase() === "w" && !event.repeat) {
+    widenPaddle();
   }
   if (event.key.toLowerCase() === "r") {
     restartGame();
