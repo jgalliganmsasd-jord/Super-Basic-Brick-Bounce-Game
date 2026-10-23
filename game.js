@@ -50,6 +50,14 @@ function launchBall() {
   }
 }
 
+function restartGame() {
+  bricks = makeBricks();
+  gameScore = 0;
+  GameState.addedBallSpeed = 0;
+  GameState.addedPaddleSpeed = 0;
+  resetBall();
+}
+
 
 // ------------------------------------------------------------
 // THE PADDLE
@@ -81,6 +89,9 @@ document.addEventListener("keydown", function (event) {
   if (event.code === "Space") {
     event.preventDefault();
     launchBall();
+  }
+  if (event.key.toLowerCase() === "r") {
+    restartGame();
   }
   // Stop the arrow keys from scrolling the page.
   if (event.key.startsWith("Arrow")) {
