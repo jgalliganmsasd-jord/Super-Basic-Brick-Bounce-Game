@@ -20,13 +20,12 @@ function makeBricks() {
 
   for (let row = 0; row < BRICK_ROWS; row++) {
     for (let col = 0; col < BRICK_COLUMNS; col++) {
-      list.push({
-        x: left + col * (BRICK_WIDTH + BRICK_GAP),
-        y: BRICKS_TOP + row * (BRICK_HEIGHT + BRICK_GAP),
-        width: BRICK_WIDTH,
-        height: BRICK_HEIGHT,
-        score: { ...score }
-      });
+      const type = row === 0 && col === 0 ? "my_brick_name" : "default";
+      list.push(makeBrick(
+        left + col * (BRICK_WIDTH + BRICK_GAP),
+        BRICKS_TOP + row * (BRICK_HEIGHT + BRICK_GAP),
+        type
+      ));
     }
   }
 
