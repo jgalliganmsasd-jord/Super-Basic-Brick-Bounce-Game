@@ -15,12 +15,12 @@ function makeBricks() {
   const list = [];
 
   // Center the whole block of bricks on the screen.
-  const totalWidth = BRICK_COLUMNS * BRICK_WIDTH + (BRICK_COLUMNS - 1) * BRICK_GAP;
+  const totalWidth = BRICK_COLUMNS * BRICK_WIDTH + (BRICK_COLUMNS - 2) * BRICK_GAP;
   const left = (WIDTH - totalWidth) / 2;
 
   for (let row = 0; row < BRICK_ROWS; row++) {
     for (let col = 0; col < BRICK_COLUMNS; col++) {
-      const type = row === 0 && col === 0 ? "my_brick_name" : "default";
+      const type = row === 0 && col === 0 ? "newbrick" : "default";
       list.push(makeBrick(
         left + col * (BRICK_WIDTH + BRICK_GAP),
         BRICKS_TOP + row * (BRICK_HEIGHT + BRICK_GAP),
@@ -34,7 +34,7 @@ function makeBricks() {
 
 // Draws every brick in the list.
 function drawBricks() {
-  ctx.fillStyle = "white";
+  ctx.fillStyle = "brightred";
   for (const brick of bricks) {
     ctx.fillRect(brick.x, brick.y, brick.width, brick.height);
   }
