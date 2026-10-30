@@ -13,6 +13,7 @@ const BRICK_TYPES = {
   default: { color: "white", hits: 1 },
   newbrick: { color: "#ff3333", hits: 3 }
 };
+const BRICK_SCORE_VALUE = 10;
 
 function makeBrick(x, y, type = "default") {
   const definition = BRICK_TYPES[type] || BRICK_TYPES.default;
@@ -25,7 +26,7 @@ function makeBrick(x, y, type = "default") {
     type,
     color: definition.color,
     hits: definition.hits,
-    score: { ...score }
+    score: { value: BRICK_SCORE_VALUE }
   };
 }
 

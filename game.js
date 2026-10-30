@@ -11,11 +11,17 @@ const GameState = {
   addedPaddleSpeed: 0
 };
 
-const canvas = document.getElementById("game");
-const ctx = canvas.getContext("2d");
+const canvas = typeof document !== "undefined" ? document.getElementById("game") : null;
+const ctx = canvas && canvas.getContext ? canvas.getContext("2d") : {
+  fillStyle: "",
+  font: "",
+  textAlign: "start",
+  fillRect() {},
+  fillText() {}
+};
 
-const WIDTH = canvas.width;   // 600
-const HEIGHT = canvas.height; // 450
+const WIDTH = canvas ? canvas.width : 600;   // 600
+const HEIGHT = canvas ? canvas.height : 450; // 450
 
 
 // ------------------------------------------------------------
@@ -53,6 +59,7 @@ function launchBall() {
 function restartGame() {
   bricks = makeBricks();
   gameScore = 0;
+  isPaused = false;
   GameState.addedBallSpeed = 0;
   GameState.addedPaddleSpeed = 0;
   resetBall();
@@ -100,30 +107,32 @@ function pauseGame() {
 // ------------------------------------------------------------
 const keys = {};
 
-document.addEventListener("keydown", function (event) {
-  keys[event.key.toLowerCase()] = true;
-  if (event.code === "Space") {
-    event.preventDefault();
-    launchBall();
-  }
-  if (event.key.toLowerCase() === "p" && !event.repeat) {
-    pauseGame();
-  }
-  if (event.key.toLowerCase() === "w" && !event.repeat) {
-    widenPaddle();
-  }
-  if (event.key.toLowerCase() === "r") {
-    restartGame();
-  }
-  // Stop the arrow keys from scrolling the page.
-  if (event.key.startsWith("Arrow")) {
-    event.preventDefault();
-  }
-});
+if (typeof document !== "undefined") {
+  document.addEventListener("keydown", function (event) {
+    keys[event.key.toLowerCase()] = true;
+    if (event.code === "Space") {
+      event.preventDefault();
+      launchBall();
+    }
+    if (event.key.toLowerCase() === "p" && !event.repeat) {
+      pauseGame();
+    }
+    if (event.key.toLowerCase() === "w" && !event.repeat) {
+      widenPaddle();
+    }
+    if (event.key.toLowerCase() === "r") {
+      restartGame();
+    }
+    // Stop the arrow keys from scrolling the page.
+    if (event.key.startsWith("Arrow")) {
+      event.preventDefault();
+    }
+  });
 
-document.addEventListener("keyup", function (event) {
-  keys[event.key.toLowerCase()] = false;
-});
+  document.addEventListener("keyup", function (event) {
+    keys[event.key.toLowerCase()] = false;
+  });
+}
 
 
 // ------------------------------------------------------------
@@ -234,7 +243,9 @@ function frame(now) {
     lastTime = now;
     leftover = 0;
     draw();
-    requestAnimationFrame(frame);
+    if (typeof requestAnimationFrame === "function") {
+      requestAnimationFrame(frame);
+    }
     return;
   }
 
@@ -252,16 +263,22 @@ function frame(now) {
   }
 
   draw();
-  requestAnimationFrame(frame);
+  if (typeof requestAnimationFrame === "function") {
+    requestAnimationFrame(frame);
+  }
 }
 
 function start() {
   bricks = makeBricks();  // bricks.js
   gameScore = 0;
   resetBall();
-  lastTime = performance.now();
-  requestAnimationFrame(frame);
+  lastTime = typeof performance !== "undefined" ? performance.now() : 0;
+  if (typeof requestAnimationFrame === "function") {
+    requestAnimationFrame(frame);
+  }
 }
 
 // Wait until all game scripts have loaded, then start.
-window.addEventListener("load", start);
+if (typeof window !== "undefined") {
+  window.addEventListener("load", start);
+}
