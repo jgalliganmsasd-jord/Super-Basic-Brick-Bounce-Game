@@ -46,7 +46,7 @@ function bounceOffPaddle() {
 }
 
 
-// The ball bounces off the bricks and removes the brick it touches.
+// The ball bounces off bricks and removes them when their hits reach zero.
 function bounceOffBricks() {
   for (const brick of bricks) {
     if (!boxesTouch(ball, brick)) {
@@ -75,7 +75,11 @@ function bounceOffBricks() {
       }
     }
 
-    bricks.splice(bricks.indexOf(brick), 1);
-    return brick;  // bounce off one brick per update, then stop looking
+    brick.hits -= 1;
+    if (brick.hits <= 0) {
+      bricks.splice(bricks.indexOf(brick), 1);
+      return brick;  // return destroyed bricks for scoring
+    }
+    return;  // bounce off one brick per update, then stop looking
   }
 }
