@@ -15,12 +15,24 @@ const BRICK_TYPES = {
 };
 const BRICK_SCORE_VALUE = 10;
 
-function makeBrick(x, y, type = "default") {
+function stayStill(brick) {}
+
+function slide(brick) {
+  brick.x += brick.speed;
+  if (Math.abs(brick.x - brick.startX) > 30) {
+    brick.speed *= -1;
+  }
+}
+
+function makeBrick(x, y, type = "default", move = stayStill, speed = 0) {
   const definition = BRICK_TYPES[type] || BRICK_TYPES.default;
 
   return {
     x,
+    startX: x,
     y,
+    move,
+    speed,
     width: BRICK_WIDTH,
     height: BRICK_HEIGHT,
     type,
@@ -49,7 +61,9 @@ function makeBricks() {
       list.push(makeBrick(
         left + col * (BRICK_WIDTH + BRICK_GAP),
         BRICKS_TOP + row * (BRICK_HEIGHT + BRICK_GAP),
-        type
+        type,
+        row === 0 ? slide : stayStill,
+        row === 0 ? 2 : 0
       ));
     }
   }
