@@ -63,6 +63,7 @@ function restartGame() {
   GameState.addedBallSpeed = 0;
   GameState.addedPaddleSpeed = 0;
   resetBall();
+  resetPaddle();
 }
 
 
@@ -76,6 +77,12 @@ const paddle = {
   height: 12,
   speed: 6
 };
+
+function resetPaddle() {
+  paddle.width = 90;
+  paddle.x = WIDTH / 2 - paddle.width / 2;
+  paddle.y = HEIGHT - 30;
+}
 
 function widenPaddle() {
   const center = paddle.x + paddle.width / 2;
@@ -131,6 +138,12 @@ if (typeof document !== "undefined") {
 
   document.addEventListener("keyup", function (event) {
     keys[event.key.toLowerCase()] = false;
+  });
+
+  window.addEventListener("blur", function () {
+    Object.keys(keys).forEach(function (key) {
+      keys[key] = false;
+    });
   });
 }
 
