@@ -41,7 +41,11 @@ function makeBricks() {
 
   for (let row = 0; row < BRICK_ROWS; row++) {
     for (let col = 0; col < BRICK_COLUMNS; col++) {
-      const type = row === 0 && col === 0 ? "newbrick" : "default";
+      //the line below this one controls WHERE the newbricks are made
+      // row === 0 && col === 1 means that the new brick is ONLY in 0,1
+      // && means and, it means BOTH must be true
+      // || means OR, it means EITHER can be true
+      const type = row === 0 || col === 0 ? "newbrick" : "default";
       list.push(makeBrick(
         left + col * (BRICK_WIDTH + BRICK_GAP),
         BRICKS_TOP + row * (BRICK_HEIGHT + BRICK_GAP),
