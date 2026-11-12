@@ -42,7 +42,9 @@ function bounceOffPaddle() {
   if (boxesTouch(ball, paddle) && ball.vy > 0) {
     ball.y = paddle.y - ball.height;  // sit on top of the paddle
     ball.vy = -ball.vy;
+    return true;
   }
+  return false;
 }
 
 

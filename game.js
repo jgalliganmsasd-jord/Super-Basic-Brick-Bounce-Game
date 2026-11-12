@@ -17,7 +17,10 @@ const ctx = canvas && canvas.getContext ? canvas.getContext("2d") : {
   font: "",
   textAlign: "start",
   fillRect() {},
-  fillText() {}
+  fillText() {},
+  beginPath() {},
+  arc() {},
+  fill() {}
 };
 
 const WIDTH = canvas ? canvas.width : 600;   // 600
@@ -77,6 +80,19 @@ const paddle = {
   height: 12,
   speed: 6
 };
+
+const PADDLE_HIT_EFFECT_DURATION = 18;
+const paddleHitEffect = {
+  x: 0,
+  y: 0,
+  framesRemaining: 0
+};
+
+function showPaddleHitEffect() {
+  paddleHitEffect.x = ball.x + ball.width / 2;
+  paddleHitEffect.y = paddle.y;
+  paddleHitEffect.framesRemaining = PADDLE_HIT_EFFECT_DURATION;
+}
 
 function resetPaddle() {
   paddle.width = 90;
@@ -153,6 +169,10 @@ if (typeof document !== "undefined") {
 // what they touched.
 // ------------------------------------------------------------
 function update() {
+  if (paddleHitEffect.framesRemaining > 0) {
+    paddleHitEffect.framesRemaining -= 1;
+  }
+
   for (const brick of bricks) {
     brick.move(brick);
   }
@@ -161,7 +181,9 @@ function update() {
   moveBall();
 
   bounceOffWalls();   // collisions.js
-  bounceOffPaddle();  // collisions.js
+  if (bounceOffPaddle()) {
+    showPaddleHitEffect();
+  }
   const brokenBrick = bounceOffBricks();  // collisions.js
   if (brokenBrick) {
     GameState.addedBallSpeed += 0.25;
@@ -230,8 +252,28 @@ function draw() {
   ctx.font = "12px sans-serif";
   ctx.fillText("Added ball speed: " + GameState.addedBallSpeed.toFixed(2), 250, 20);
   ctx.fillText("Added paddle speed: " + GameState.addedPaddleSpeed.toFixed(2), 250, 40);
+  ctx.fillStyle = paddleHitEffect.framesRemaining > 0 ? "yellow" : "white";
   ctx.fillRect(paddle.x, paddle.y, paddle.width, paddle.height);
   ctx.fillRect(ball.x, ball.y, ball.width, ball.height);
+
+  if (paddleHitEffect.framesRemaining > 0) {
+    const progress = 1 - paddleHitEffect.framesRemaining / PADDLE_HIT_EFFECT_DURATION;
+    const radius = 8 + progress * 24;
+    const opacity = 1 - progress;
+    for (let i = 0; i < 8; i += 1) {
+      const angle = (Math.PI * 2 * i) / 8;
+      ctx.fillStyle = "rgba(255, 0, 0, " + opacity + ")";
+      ctx.beginPath();
+      ctx.arc(
+        paddleHitEffect.x + Math.cos(angle) * radius,
+        paddleHitEffect.y + Math.sin(angle) * radius,
+        3,
+        0,
+        Math.PI * 2
+      );
+      ctx.fill();
+    }
+  }
 
   drawBricks();  // bricks.js
 
